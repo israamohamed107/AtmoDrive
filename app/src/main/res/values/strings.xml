@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">AtmoDrive</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="welcome_message">Looking for a \nride? Try \n<font color='#00A6A6'>AtmoDrive</font> and \nBook now!</string>
+    <string name="get_started">Get Started</string>
+    <string name="powered_by_atmosphere">Powered by Atmosphere ©</string>
+    <string name="logo">logo</string>
+    <string name="enter_mobile_number">Enter mobile number</string>
+    <string name="enter_mobile_number_to_find_your_account_or_ncreate_a_new_one">Enter mobile number to find your account or \ncreate a new one.</string>
+    <string name="phone_hint">1234567890</string>
+    <string name="continue_">Continue</string>
+    <string name="by_continue_you_agree_to_atmodrive_s">By continue you agree to AtmoDrive\'s<b><u><font color='#00A6A6'> Terms &amp; Conditions </font></u></b></string>
+    <string name="do_not_receive_a_code">Don’t receive a code? </string>
+    <string name="resend">Resend</string>
+    <string name="privacy_policy">and <b><u><font color='#00A6A6'>Privacy Policy </font></u></b></string>
+    <string name="verify">Verify</string>
+    <string name="full_name">Full name</string>
+    <string name="submit">Submit</string>
+    <string name="enter_your_information_below_to_create_your_naccount">Enter your information below to create your \naccount.</string>
+    <string name="create_account">Create account</string>
+    <string name="email_address_optional">Email address (optional)</string>
+    <string name="login">Login</string>
+    <string name="otp_code">OTP code</string>
+    <string name="send_code">Send code</string>
+    <string name="enter_mobile_number_and_password_to_continue">Enter mobile number and password to\n continue.</string>
+    <string name="forget_password"><u>forget password?</u></string>
+    <string name="don_t_have_a_captain_account">Don’t have a captain account?</string>
+    <string name="welcome_back">Welcome back,</string>
+    <string name="forget_password_">Forget Password</string>
+    <string name="next">Next</string>
+    <string name="step_1_mobile_number">Step 1: Mobile Number</string>
+    <string name="step_2_verification">Step 2: Verification</string>
+    <string name="personal_photo">Personal Photo</string>
+    <string name="step_3_personal_information">Step 3: Personal Information</string>
+    <string name="id_front">ID (Front)</string>
+    <string name="id_number">ID number</string>
+    <string name="password">Password</string>
+    <string name="step_5_bank_account_optional">Step 5: Bank account <font color="#FFB21C">(Optional)</font></string>
+    <string name="submit_information">Submit information</string>
+    <string name="step_4_vehicle_information">Step 4: Vehicle Information</string>
+    <string name="car_licence_front">Car licence (Front)</string>
+    <string name="car_licence_back">Car licence (Back)</string>
+    <string name="car_number">Car number</string>
+</resources>
