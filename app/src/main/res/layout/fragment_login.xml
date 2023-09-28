@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".auth.presentation.fragments.LoginFragment"
+    android:background="@color/backgroundColor"
+    android:padding="@dimen/_10sdp"
+    >
+
+
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_mobile_number_to_find_your_account_or_ncreate_a_new_one"
+        android:textColor="@color/textColor"
+        android:textSize="@dimen/_15sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        />
+
+
+
+    <EditText
+        android:id="@+id/editText_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:backgroundTint="@color/hint_color"
+        android:hint="@string/phone_hint"
+        android:textSize="@dimen/_15sdp"
+        android:inputType="phone"
+        android:maxLength="10"
+        android:textColor="@color/textColor"
+        android:textColorHint="@color/hint_color"
+        android:gravity="center"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginVertical="@dimen/_20sdp"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <com.hbb20.CountryCodePicker
+        android:id="@+id/countryCodeHolder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:ccp_showNameCode="false"
+        app:ccp_textSize="@dimen/_15sdp"
+        app:layout_constraintStart_toStartOf="@id/editText_phone"
+        app:layout_constraintTop_toTopOf="@id/editText_phone"
+        app:layout_constraintBottom_toBottomOf="@id/editText_phone"
+        app:ccp_autoDetectCountry="true"
+        app:ccpDialog_textColor="@color/textColor"
+        app:ccp_contentColor="@color/textColor"
+        app:ccpDialog_backgroundColor="@color/backgroundColor"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_continue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/_5sdp"
+        android:padding="@dimen/_10sdp"
+        android:text="@string/continue_"
+        android:textAllCaps="false"
+        android:textSize="@dimen/_15sdp"
+        app:cornerRadius="@dimen/_5sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText_phone"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/main_color"
+        />
+
+    <TextView
+        android:id="@+id/txt_terms_and_conditions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:text="@string/by_continue_you_agree_to_atmodrive_s"
+        android:textColor="@color/textColor"
+        android:textSize="@dimen/_12sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_continue"
+        />
+
+
+    <TextView
+        android:id="@+id/txt_terms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/terms_and_conditions"
+        app:layout_constraintStart_toEndOf="@id/txt_terms_and_conditions"
+        app:layout_constraintTop_toTopOf="@id/txt_terms_and_conditions"
+        android:textColor="@color/main_color"
+        android:textStyle="bold"
+        android:textSize="@dimen/_12sdp"
+        />
+
+    <TextView
+        android:id="@+id/txt_privacy_policy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/privacy_policy"
+        android:textColor="@color/textColor"
+        android:textSize="@dimen/_12sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_terms_and_conditions"
+        android:layout_marginStart="@dimen/_1sdp"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
