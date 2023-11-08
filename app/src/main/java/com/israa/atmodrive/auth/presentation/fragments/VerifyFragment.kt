@@ -46,7 +46,7 @@ class VerifyFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentVerifyBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentVerifyBinding.inflate(inflater, container, false)
         startCounter()
 
         return binding.root

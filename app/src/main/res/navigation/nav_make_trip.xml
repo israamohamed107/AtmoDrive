@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_make_trip"
+    app:startDestination="@id/newTripFragment">
+
+    <fragment
+        android:id="@+id/newTripFragment"
+        android:name="com.israa.atmodrive.home.presentation.fragments.trip.NewTripFragment"
+        android:label="fragment_new_trip"
+        tools:layout="@layout/fragment_new_trip" />
+
+
+</navigation>

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/backgroundColor"
+    android:elevation="@dimen/_5sdp"
+    app:cardCornerRadius="@dimen/_10sdp"
+    tools:context=".home.presentation.fragments.trip.TripFragment"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="0dp"
+    app:layout_behavior="@string/bottom_sheet_behavior"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/_5sdp"
+        android:background="@color/backgroundColor"
+        >
+
+        <TextView
+            android:id="@+id/txt_trip_Status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/orange"
+            android:text="@string/captain_is_on_the_way_to_you"
+            android:textStyle="bold"
+            android:fontFamily="@font/dm_sans"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_15sdp"
+            android:padding="@dimen/_10sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        
+        <ImageView
+            android:id="@+id/img_captain"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:src="@drawable/profile"
+            app:layout_constraintTop_toBottomOf="@id/txt_trip_Status"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_margin="@dimen/_15sdp"
+            android:background="@drawable/profile_background"
+            />
+
+        <TextView
+            android:id="@+id/txt_passenger_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/txt_trip_Status"
+            app:layout_constraintStart_toEndOf="@id/img_captain"
+            android:text="Israa Mohamed"
+            android:textStyle="bold"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/_15sdp"
+            android:fontFamily="@font/dm_sans"
+            android:layout_margin="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+
+            />
+        <TextView
+            android:id="@+id/txt_car_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="646 BC"
+            android:textColor="@color/secondary_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/txt_passenger_name"
+            android:layout_marginHorizontal="@dimen/_15sdp"
+            android:textSize="@dimen/_15sdp"
+            android:textStyle="bold"
+            android:fontFamily="@font/dm_sans"
+            android:layout_marginTop="@dimen/_5sdp"
+            />
+
+        <TextView
+            android:id="@+id/txt_car_brand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="White Sunny"
+            android:textSize="@dimen/_12sdp"
+            android:textColor="@color/secondary_color"
+            app:layout_constraintTop_toBottomOf="@id/txt_car_number"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="@dimen/_15sdp"
+            android:fontFamily="@font/dm_sans"
+
+            />
+
+        <TextView
+            android:id="@+id/txt_car_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2018"
+            android:textSize="@dimen/_12sdp"
+            android:textColor="@color/secondary_color"
+            app:layout_constraintTop_toBottomOf="@id/txt_car_brand"
+            app:layout_constraintBottom_toBottomOf="@id/img_captain"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="@dimen/_15sdp"
+
+            />
+        <RatingBar
+            android:id="@+id/rate_bar"
+            style="@style/Widget.AppCompat.RatingBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:paddingVertical="@dimen/_5sdp"
+            android:progressTint="@color/orange"
+            android:rating="4"
+            android:stepSize="1"
+            android:layout_marginTop="@dimen/_5sdp"
+            app:layout_constraintStart_toStartOf="@id/txt_passenger_name"
+            app:layout_constraintTop_toBottomOf="@id/txt_passenger_name" />
+
+        <TextView
+            android:id="@+id/txt_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="(4.0)"
+            android:textColor="@color/secondary_color"
+            android:textSize="@dimen/_10sdp"
+            app:layout_constraintStart_toEndOf="@id/rate_bar"
+            app:layout_constraintTop_toTopOf="@id/rate_bar"
+            android:paddingVertical="@dimen/_5sdp"/>
+
+        <TextView
+            android:id="@+id/txt_contact_captain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Contact captain"
+            android:fontFamily="@font/dm_sans"
+            android:textColor="@color/secondary_color"
+            android:textSize="@dimen/_13sdp"
+            app:layout_constraintTop_toBottomOf="@id/img_captain"
+            android:layout_marginVertical="@dimen/_30sdp"
+            app:layout_constraintStart_toStartOf="@id/img_captain"
+
+            />
+
+        <TextView
+            android:id="@+id/txt_cash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cash"
+            app:layout_constraintEnd_toEndOf="@id/txt_car_model"
+            app:layout_constraintTop_toTopOf="@id/txt_contact_captain"
+            app:layout_constraintBottom_toBottomOf="@id/txt_contact_captain"
+            />
+
+        <TextView
+            android:id="@+id/txt_trip_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/green"
+            android:text="105 EG"
+            app:layout_constraintBottom_toTopOf="@id/txt_cash"
+            app:layout_constraintTop_toBottomOf="@id/txt_car_model"
+            app:layout_constraintEnd_toEndOf="@id/txt_cash"
+            android:textSize="@dimen/_13sdp"
+            android:textStyle="bold"
+            android:fontFamily="@font/dm_sans"
+            android:layout_marginTop="@dimen/_5sdp"
+            />
+
+        <ImageView
+            android:id="@+id/img_dial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/dial"
+            app:layout_constraintStart_toStartOf="@id/txt_contact_captain"
+            app:layout_constraintBottom_toBottomOf="@id/btn_reject"
+            android:layout_marginVertical="@dimen/_10sdp"
+            />
+
+        <ImageView
+            android:id="@+id/img_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/chat"
+            app:layout_constraintTop_toTopOf="@id/img_dial"
+            app:layout_constraintStart_toEndOf="@id/img_dial"
+            android:layout_marginHorizontal="@dimen/_10sdp"
+            />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_reject"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintWidth_percent=".4"
+            android:text="Cancel trip"
+            android:textColor="@color/red"
+            android:backgroundTint="@color/backgroundColor"
+            app:strokeColor="@color/red"
+            app:strokeWidth="1dp"
+            android:textSize="@dimen/_13sdp"
+            android:fontFamily="@font/dm_sans"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/txt_contact_captain"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="@dimen/_15sdp"
+            android:layout_marginVertical="@dimen/_5sdp"
+            app:cornerRadius="@dimen/_5sdp"
+            android:textAllCaps="false"
+            android:padding="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

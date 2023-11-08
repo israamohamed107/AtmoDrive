@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_request_trip"
+    app:startDestination="@id/requestTripFragment">
+
+    <fragment
+        android:id="@+id/requestTripFragment"
+        android:name="com.israa.atmodrive.home.presentation.fragments.trip.ConfirmTripFragment"
+        android:label="fragment_request_trip"
+        tools:layout="@layout/fragment_request_trip" />
+</navigation>

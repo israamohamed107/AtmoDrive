@@ -8,7 +8,7 @@ import java.net.SocketTimeoutException
 fun Exception.explain():ResponseState.Failure{
      return when (this) {
         is IOException -> {
-            ResponseState.Failure("There is no internet connection")
+            ResponseState.Failure(this.localizedMessage)
         }
         is SocketTimeoutException -> {
             ResponseState.Failure("Bad Connection")
@@ -18,7 +18,7 @@ fun Exception.explain():ResponseState.Failure{
             ResponseState.Failure("HttpException  code $code")
         }
         else -> {
-//                    println("NetworkState__Error ${e.localizedMessage}")
+//           println("NetworkState__Error ${e.localizedMessage}")
             ResponseState.Failure(this.localizedMessage)
         }
     }

@@ -1,4 +1,4 @@
-package com.israa.atmodrive.home
+package com.israa.atmodrive.home.presentation.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,14 +10,16 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 
-class MyTripsFragment : Fragment() {
+class GetHelpFragment : Fragment() {
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_trips, container, false)
+        return inflater.inflate(R.layout.fragment_get_help, container, false)
     }
+
 
 }

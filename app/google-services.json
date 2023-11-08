@@ -1,0 +1,106 @@
+{
+  "project_info": {
+    "project_number": "5198505490",
+    "firebase_url": "https://atmodrive-2f676-default-rtdb.firebaseio.com",
+    "project_id": "atmodrive-2f676",
+    "storage_bucket": "atmodrive-2f676.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:5198505490:android:eedf0f4c19d76d07c75acb",
+        "android_client_info": {
+          "package_name": "com.israa.atmodrive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwvc7qjQaD5FeCM0P9Qinj-tZLoFAVKJE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:5198505490:android:6b4297a72767dccfc75acb",
+        "android_client_info": {
+          "package_name": "com.israa.atmodrivecaptain"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwvc7qjQaD5FeCM0P9Qinj-tZLoFAVKJE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:5198505490:android:df4835171c4da6acc75acb",
+        "android_client_info": {
+          "package_name": "com.mosamir.atmodrivecaptain"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwvc7qjQaD5FeCM0P9Qinj-tZLoFAVKJE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:5198505490:android:494631c181fd6284c75acb",
+        "android_client_info": {
+          "package_name": "com.mosamir.atmodrivepassenger"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwvc7qjQaD5FeCM0P9Qinj-tZLoFAVKJE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:5198505490:android:120c7490734f198dc75acb",
+        "android_client_info": {
+          "package_name": "com.mostafahelal.atmodrive2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwvc7qjQaD5FeCM0P9Qinj-tZLoFAVKJE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

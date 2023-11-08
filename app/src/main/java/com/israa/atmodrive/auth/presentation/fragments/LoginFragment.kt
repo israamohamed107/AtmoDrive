@@ -32,7 +32,7 @@ class LoginFragment : Fragment() {
         // Inflate the layout for this fragment
         (requireActivity() as AppCompatActivity).supportActionBar?.show()
 
-        _binding = FragmentLoginBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
     }
 
