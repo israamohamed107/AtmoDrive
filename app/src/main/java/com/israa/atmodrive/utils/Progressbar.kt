@@ -24,7 +24,6 @@ object Progressbar {
 
     fun show(activity: Activity) {
 
-
         if (!hasActivity) {
             hasActivity = true
             init(activity)
@@ -38,14 +37,6 @@ object Progressbar {
             }
         }
     } // show
-
-    fun isVisible(): Boolean {
-        try {
-            return progress!!.isShowing
-        } catch (e: Exception) {
-            return false
-        }
-    } // fun of isVisible
 
     fun dismiss() {
         progress?.dismiss()

@@ -2,7 +2,9 @@ package com.israa.atmodrive.home.presentation.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources.NotFoundException
 import android.graphics.Bitmap
@@ -26,10 +28,15 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.LocationSettingsResponse
+import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -45,21 +52,26 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
 import com.israa.atmodrive.R
+import com.israa.atmodrive.auth.presentation.MainActivity
 import com.israa.atmodrive.databinding.FragmentHomeBinding
-import com.israa.atmodrive.home.data.models.TripModel
+import com.israa.atmodrive.home.data.models.ConfirmTripResponse
+import com.israa.atmodrive.home.data.models.TripData
+import com.israa.atmodrive.home.presentation.fragments.trip.TripFragment
 import com.israa.atmodrive.home.viewmodels.HomeViewModel
-import com.israa.atmodrive.utils.ACCEPT_TRIP
+import com.israa.atmodrive.utils.ACCEPTED
+import com.israa.atmodrive.utils.ARRIVED
 import com.israa.atmodrive.utils.DROP_OFF
+import com.israa.atmodrive.utils.ON_WAY
+import com.israa.atmodrive.utils.PAY
+import com.israa.atmodrive.utils.PENDING
 import com.israa.atmodrive.utils.PICK_UP
 import com.israa.atmodrive.utils.Progressbar
 import com.israa.atmodrive.utils.START_TRIP
-import com.israa.atmodrive.utils.TRIPS
 import com.israa.atmodrive.utils.UiState
+import com.israa.atmodrive.utils.hideKeyboard
+import com.israa.atmodrive.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -81,27 +93,39 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private var dropOffMarker: Marker? = null
     private var carMarker: Marker? = null
 
+    private var addPickUpMarker = false
+    private var addDropOffMarker = false
+    private var addCarMarker = false
+
+
     private lateinit var pickUpLocationAddress: String
 
     private var pickUpLocation: LatLng? = null
     private var dropOffLocation: LatLng? = null
 
-    private lateinit var myNavHostFragment: NavHostFragment
+    private var myNavHostFragment: NavHostFragment? = null
     private lateinit var baseBottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var baseBottomSheetView: ConstraintLayout
 
     private var chooseFromMap: Boolean = false
     private var input: String = ""
     private var isBottomSheetVisible = false
-    
+    private var searchingForCaptain = false
+
     private val homeViewModel: HomeViewModel by activityViewModels()
 
 
-    private lateinit var valueEventListener:ValueEventListener
-    @Inject
-    lateinit var ref :DatabaseReference
 
-    private var tripStatus:String? = null
+    @Inject
+    lateinit var ref: DatabaseReference
+
+    private var tripStatus: String =""
+    private var flag: Boolean = true
+
+    private var tripId:String? = null
+    private var findingCaptainDialog:FindingCaptainFragment? = null
+    private val DIALOG_TAG = "finding captain"
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -119,11 +143,9 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         myNavHostFragment =
             childFragmentManager.findFragmentById(R.id.bottom_sheet_frag_container) as NavHostFragment
 
-        onTrip()
         initLocation()
         initViews()
         onClick()
-        collect()
         onBachPressedSetup()
 
 
@@ -132,51 +154,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private fun onTrip() {
         homeViewModel.onTrip()
     }
-    private fun observeOnTrip(tripId: String)
-    {
-        Progressbar.show(requireActivity())
-        valueEventListener = object :ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.value != null){
-                    Progressbar.dismiss()
-                    val trip = snapshot.getValue(TripModel::class.java)
-                    Toast.makeText(requireContext(), trip!!.status, Toast.LENGTH_SHORT).show()
 
-                    if (trip.status != tripStatus){
-
-
-                        if(trip.status == ACCEPT_TRIP){
-                            tripStatus = trip.status
-                            homeViewModel.setTripStatus(tripStatus!!)
-                            dropOffMarker?.isVisible = false
-                            addCarMarkerOnMap(LatLng(trip.lat!!.toDouble(),trip.lng!!.toDouble()))
-
-                        }else if (trip.status == START_TRIP){
-                            tripStatus = START_TRIP
-                            homeViewModel.setTripStatus(tripStatus!!)
-                            pickupMarker?.remove()
-                            dropOffMarker?.isVisible = true
-                            addCarMarkerOnMap(LatLng(trip.lat!!.toDouble(),trip.lng!!.toDouble()))
-                        }
-
-                        setMyNavHostFragmentGraph(R.navigation.nav_trip_status,.40)
-                        baseBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-                        baseBottomSheetBehavior.isDraggable = false
-                    }
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), error.details, Toast.LENGTH_SHORT).show()
-            }
-
-        }
-        ref.child(TRIPS).child(tripId).addValueEventListener(valueEventListener)
-    }
-
-    private fun removeObserveOnTrip(tripId:String){
-        ref.child(TRIPS).child(tripId).removeEventListener(valueEventListener)
-    }
     private fun initLocation() {
 
         mFusedLocationProviderClient.let {
@@ -185,34 +163,30 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         }
 
         mLocationRequest.let {
-            mLocationRequest =
-                LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 15 * 60 * 1000)
-                    .setWaitForAccurateLocation(false)
-                    .setMinUpdateIntervalMillis(2000) //FastestInterval
-                    .setMaxUpdateDelayMillis(2000) //locationMaxWaitTime
-                    .setMinUpdateDistanceMeters(5f).build()
-
-//            mLocationRequest = LocationRequest.create()
-//                .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
-//                .setInterval(2000)
-//                .setFastestInterval(2000)
-//                .setSmallestDisplacement(5f)
-
+            mLocationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000)
+                .setWaitForAccurateLocation(false)
+                .setMinUpdateIntervalMillis(3000) //FastestInterval
+                .setMaxUpdateDelayMillis(3000) //locationMaxWaitTime
+                .setMinUpdateDistanceMeters(5f)
+                .build()
         }
-
     }
 
     private fun initViews() {
-        baseBottomSheetView = requireActivity().findViewById(R.id.base_bottom_sheet)
+        baseBottomSheetView = binding.bottomSheetId.baseBottomSheet
         baseBottomSheetBehavior = BottomSheetBehavior.from(baseBottomSheetView)
+        baseBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        bottomSheetVisibility(false)
 
+        findingCaptainDialog = FindingCaptainFragment()
+        findingCaptainDialog?.isCancelable = false
     }
 
     private fun onClick() {
         binding.apply {
             txtDestination.setOnClickListener {
-                setMyNavHostFragmentGraph(R.navigation.nav_make_trip, .70)
-               isBottomSheetVisible = true
+                setMyNavHostFragmentGraph(R.navigation.nav_make_trip)
+                bottomSheetVisibility(true)
             }
 
             btnDone.setOnClickListener {
@@ -222,24 +196,26 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 }
             }
 
-            btnCancel.setOnClickListener {
-                homeViewModel.chooseFromMap(false)
-                clearMap()
-                baseBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            imgLogout.setOnClickListener {
+                homeViewModel.logout()
+                startActivity(Intent(requireActivity(),MainActivity::class.java))
+                requireActivity().finish()
+            }
 
-            }
-            imgGetCurrentLocation.setOnClickListener {
-                getMyLocation()
-            }
+//            btnCancel.setOnClickListener {
+//                homeViewModel.chooseFromMap(false)
+//                clearMap()
+//
+//            }
         }
 
 
     }
 
-    private fun cameraBounds(pickUpLocation: LatLng, dropOffLocation: LatLng) {
+    private fun cameraBounds(firstLocation: LatLng, secondLocation: LatLng) {
         val builder = LatLngBounds.Builder()
-        builder.include(pickUpLocation)
-        builder.include(dropOffLocation)
+        builder.include(firstLocation)
+        builder.include(secondLocation)
         //bounds for camera
         val bounds = builder.build()
         val width = resources.displayMetrics.widthPixels
@@ -277,25 +253,33 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun clearMap() {
-        baseBottomSheetBehavior.isDraggable = true
-        homeViewModel.setDropOffLocation(null)
+//        baseBottomSheetBehavior.isDraggable = true
+//        homeViewModel.setDropOffLocation(null)
         dropOffMarker = null
         pickupMarker = null
-        getMyLocation()
+        carMarker = null
+        addMarkers(false,false,false)
         mMap.clear()
+        binding.card.isVisible = true
+        tripId?.let { homeViewModel.removeObserveOnTrip(tripId!!)}
+        tripId = null
+        homeViewModel.setTripID(null)
+        getMyLocation()
+
     }
 
-    private fun setMyNavHostFragmentGraph(navGraphId: Int, heightPercent: Double) {
-        val inflater = myNavHostFragment.navController.navInflater
-        val graph = inflater.inflate(navGraphId)
-        myNavHostFragment.navController.graph = graph
-        baseBottomSheetBehavior.maxHeight =
-            (((requireActivity().resources.displayMetrics).heightPixels) * heightPercent).toInt()
-        baseBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+    private fun setMyNavHostFragmentGraph(navGraphId: Int) {
+        val inflater = myNavHostFragment?.navController?.navInflater
+        val graph = inflater?.inflate(navGraphId)
+        myNavHostFragment?.navController?.graph = graph!!
+        baseBottomSheetBehavior.isDraggable = navGraphId != R.navigation.nav_trip_status
+
     }
 
 
+    @SuppressLint("MissingPermission")
     private fun addDropOffMarkerOnMap(dropOffLocation: LatLng) {
+        mMap.isMyLocationEnabled = false
         if (dropOffMarker == null) {
             //create a new marker
             val markerOption = MarkerOptions()
@@ -334,7 +318,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 //set custom icon
                 icon(bitmapFromVector(requireContext(), R.drawable.car))
 
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(captainLocation, 14f))
+//                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(captainLocation, 14f))
 
             }
             //add marker
@@ -362,10 +346,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 )
             )
             if (!success) {
-                Log.e("TAG", "Style parsing failed.")
+                Log.e("MAP", "Style parsing failed.")
             }
         } catch (e: NotFoundException) {
-            Log.e("TAG", "Can't find style. Error: ", e)
+            Log.e("MAP", "Can't find style. Error: ", e)
         }
         mMap = googleMap
 
@@ -387,18 +371,20 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             ) != PackageManager.PERMISSION_GRANTED
         ) {
 
-            ActivityCompat.requestPermissions(
-                requireActivity(), arrayOf(
+            requestPermissions(
+                arrayOf(
                     Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.ACCESS_FINE_LOCATION
                 ), 1
             )
-        } else getMyLocation()
+        } else {
+            locationChecker()
+        }
     }
 
     @SuppressLint("MissingPermission")
     private fun getMyLocation() {
-
+        mMap.isMyLocationEnabled = true
         val currentLocationTask: Task<Location> = mFusedLocationProviderClient!!.getCurrentLocation(
             Priority.PRIORITY_HIGH_ACCURACY, null
         )
@@ -415,115 +401,241 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun collect() {
-        viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch{
 
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
 
                 launch {
-                    homeViewModel.passengerOnTrip.collect{ status ->
-                        when(status){
-                            is UiState.Failure ->{
+                    homeViewModel.passengerOnTrip.collect { result ->
+                        when (result) {
+                            is UiState.Failure -> {
                                 Progressbar.dismiss()
-                                Toast.makeText(requireContext(), status.message, Toast.LENGTH_SHORT).show()
+                                if (searchingForCaptain) searchingForCaptain(false)
                             }
-                            UiState.Loading ->{
+
+                            UiState.Loading -> {
                                 Progressbar.show(requireActivity())
                             }
-                            is UiState.Success ->{
+
+                            is UiState.Success -> {
                                 Progressbar.dismiss()
-                                Toast.makeText(requireContext(),status.data.toString() , Toast.LENGTH_SHORT).show()
+                                val tripDetails = result.data as TripData
+                                tripId = tripDetails.trip_id.toString()
+                                homeViewModel.setTripID(tripDetails.trip_id)
+                                if(tripDetails.trip_status == PENDING){
+                                    searchingForCaptain(true)
+                                }
+                                homeViewModel.observeOnTrip(tripId!!)
+                                addMarkers(
+                                    addCarMarker = true,
+                                    addPickUpMarker = true,
+                                    addDropOffMarker = true
+                                )
+                                binding.card.isVisible = false
+
                             }
+
+                            else -> {}
                         }
                     }
                 }
 
                 launch {
                     homeViewModel.pickUpLocation.collect { currentLocation ->
-                            if (currentLocation != null) {
-                                pickUpLocationAddress =
-                                    homeViewModel.getAddress(requireContext(), currentLocation)
-                                binding.txtPickup.text = pickUpLocationAddress
-                                pickUpLocation = currentLocation
-                            }else{
-                                Toast.makeText(requireContext(), "PickUp Null", Toast.LENGTH_SHORT).show()
-                            }
+                        if (currentLocation != null) {
+                            pickUpLocationAddress =
+                                homeViewModel.getAddress(requireContext(), currentLocation)
+                            binding.txtPickup.text = pickUpLocationAddress
+                            pickUpLocation = currentLocation
+
+                            if(addPickUpMarker)
+                                addPickUpMarker(currentLocation)
                         }
+                    }
                 }
 
                 launch {
                     homeViewModel.dropOffLocation.collect {
-                        if(it!=null)
-                                dropOffLocation = it
-                        else
-                            Toast.makeText(requireContext(), "Drop off Null", Toast.LENGTH_SHORT).show()
-
+                        if (it != null){
+                            dropOffLocation = it
+                            if (addDropOffMarker)
+                                addDropOffMarkerOnMap(it)
+                        }
+                    }
+                }
+                launch {
+                    homeViewModel.captainLocation.collect {
+                        if (it != null){
+                            addCarMarkerOnMap(it)
+                            if(addPickUpMarker)
+                                cameraBounds(pickUpLocation!!,it)
+                            else
+                                cameraBounds(dropOffLocation!!,it)
+                        }
                     }
                 }
 
                 launch {
                     homeViewModel.chooseFromMap.collect {
-                            chooseFromMap = it
-                            chooseFromMap(it)
-                        if(it)
+                        if (it) {
                             pickLocation()
-
+                            hideKeyboard()
                         }
+
+                        chooseFromMap = it
+                        chooseFromMap(it)
+
+                    }
                 }
 
                 launch {
                     homeViewModel.currentInput.collect { currentInput ->
-                            input = currentInput
-                        }
+                        input = currentInput
+                    }
                 }
 
                 launch {
                     homeViewModel.makeTrip.collect { result ->
-                            when (result) {
-                                is UiState.Failure -> {
-                                    Progressbar.dismiss()
-                                    Toast.makeText(
-                                        requireContext(), result.message, Toast.LENGTH_SHORT
-                                    ).show()
-                                }
+                        when (result) {
+                            is UiState.Failure -> {
+                                Progressbar.dismiss()
+                                Toast.makeText(
+                                    requireContext(), result.message, Toast.LENGTH_SHORT
+                                ).show()
+                            }
 
-                                UiState.Loading -> {
-                                    Progressbar.show(requireActivity())
-                                }
+                            UiState.Loading -> {
+                                Progressbar.show(requireActivity())
+                            }
 
-                                is UiState.Success -> {
-                                    Progressbar.dismiss()
-                                    addDropOffMarkerOnMap(dropOffLocation!!)
-                                    addPickUpMarker(pickUpLocation!!)
-                                    cameraBounds(pickUpLocation!!, dropOffLocation!!)
-                                    setMyNavHostFragmentGraph(R.navigation.nav_request_trip, .50)
-                                    baseBottomSheetBehavior.apply {
-                                        state = BottomSheetBehavior.STATE_EXPANDED
-                                        isDraggable = false
-                                    }
-                                   isBottomSheetVisible = true
-                                }
+                            is UiState.Success -> {
+                                Progressbar.dismiss()
+                                addDropOffMarkerOnMap(dropOffLocation!!)
+                                addPickUpMarker(pickUpLocation!!)
+                                cameraBounds(pickUpLocation!!, dropOffLocation!!)
+                                setMyNavHostFragmentGraph(R.navigation.nav_request_trip)
+                                bottomSheetVisibility(true)
+                            }
 
-                                else -> {
+                            else -> {
 
-                                }
                             }
                         }
+                    }
                 }
 
                 launch {
-                    homeViewModel.confirmTrip.collect{ status ->
-                        when(status){
+                    homeViewModel.confirmTrip.collect { status ->
+                        when (status) {
                             is UiState.Failure -> {
                                 Progressbar.dismiss()
-                                Toast.makeText(requireContext(), status.message, Toast.LENGTH_SHORT).show()
-                                //observeOnTrip("5")
+                                showToast(status.message)
                             }
+
                             UiState.Loading ->
                                 Progressbar.show(requireActivity())
-                            is UiState.Success ->{
+
+                            is UiState.Success -> {
                                 Progressbar.dismiss()
-                                Toast.makeText(requireContext(), "Confirm trip Success", Toast.LENGTH_SHORT).show()
-                                baseBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                                searchingForCaptain(true)
+                                bottomSheetVisibility(false)
+                                val data = status.data as ConfirmTripResponse
+                                showToast(data.message)
+                                tripId = data.trip_id.toString()
+                                homeViewModel.setTripID(data.trip_id!!)
+                                homeViewModel.observeOnTrip(tripId!!)
+                            }
+
+                            null -> {}
+                        }
+                    }
+                }
+
+                launch {
+                    homeViewModel.tripStatus.collect { status ->
+                        when (status) {
+                            ACCEPTED, ON_WAY, ARRIVED -> {
+                                markersVisibility(
+                                    pickupMarkerVisibility = true,
+                                    dropOffMarkerVisibility = false
+                                )
+                                addMarkers(
+                                    addCarMarker = true,
+                                    addPickUpMarker = true,
+                                    addDropOffMarker = false
+                                )
+                            }
+
+                            START_TRIP, PAY -> {
+                                addMarkers(
+                                    addCarMarker = true,
+                                    addPickUpMarker = false,
+                                    addDropOffMarker = true
+                                )
+//                                dropOffMarker?.isVisible = true
+                                markersVisibility(
+                                    pickupMarkerVisibility = false,
+                                    dropOffMarkerVisibility = true
+                                )
+
+                            }
+                            else->{
+                                if (isBottomSheetVisible && tripStatus.isNotEmpty()) {
+                                    // trip ended or cancelled from captain status becomes -> ""
+                                    bottomSheetVisibility(false)
+                                    flag =true
+                                    clearMap()
+                                    homeViewModel.onTrip() // to check if its ended or cancelled from captain
+                                }
+                                homeViewModel.resetMakeTrip()
+                                homeViewModel.resetConfirmTrip()
+                            }
+                        }
+
+                        tripStatus = status
+                        if (flag && tripStatus.isNotEmpty() && tripId != null) {
+                            if(searchingForCaptain) searchingForCaptain(false)
+                            homeViewModel.getCaptainDetails(tripId!!.toLong())
+                            setMyNavHostFragmentGraph(R.navigation.nav_trip_status)
+                            binding.card.isVisible = false
+                            bottomSheetVisibility(true)
+                            flag = false
+                        }
+
+                    }
+                }
+
+                launch {
+                    homeViewModel.cancelTrip.collect{
+                        when(it){
+                            is UiState.Failure ->{
+                                showToast(it.message)
+                            }
+                            UiState.Loading ->{
+
+                            }
+                            is UiState.Success ->{
+                                clearMap()
+                                bottomSheetVisibility(false)
+                            }
+                            null -> {}
+                        }
+                    }
+                }
+
+
+                launch {
+                    homeViewModel.cancelBeforeCapAccept.observe(viewLifecycleOwner){
+                        when(it){
+                            is UiState.Failure ->{
+                                showToast(it.message)
+                            }
+                            UiState.Loading ->{
+
+                            }
+                            is UiState.Success ->{
+                                searchingForCaptain(false)
+                                clearMap()
                             }
                             null -> {}
                         }
@@ -534,21 +646,101 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    private fun bottomSheetVisibility(visibility: Boolean) {
+        if(visibility){
+            baseBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            isBottomSheetVisible = true
+        }else{
+            baseBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            isBottomSheetVisible = false
+        }
+    }
+
+    private fun searchingForCaptain(flag: Boolean) {
+        if (flag) {
+            findingCaptainDialog?.show(childFragmentManager,DIALOG_TAG)
+            searchingForCaptain = true
+        }
+        else{
+            findingCaptainDialog?.dismiss()
+            searchingForCaptain = false
+        }
+    }
 
 
+    private fun markersVisibility(pickupMarkerVisibility:Boolean,dropOffMarkerVisibility:Boolean){
+        dropOffMarker?.isVisible = dropOffMarkerVisibility
+        pickupMarker?.isVisible = pickupMarkerVisibility
+    }
+    private fun addMarkers(addCarMarker:Boolean,addPickUpMarker: Boolean,addDropOffMarker:Boolean){
+        this.addCarMarker = addCarMarker
+        this.addPickUpMarker = addPickUpMarker
+        this.addDropOffMarker = addDropOffMarker
+    }
     private fun chooseFromMap(visibility: Boolean) {
         binding.apply {
             imgPickLocation.isVisible = visibility
             btnDone.isVisible = visibility
-            btnCancel.isVisible = visibility
+//            btnCancel.isVisible = visibility
             card.isVisible = !visibility
-            imgGetCurrentLocation.isVisible = !visibility
-           isBottomSheetVisible = !visibility
+            isBottomSheetVisible = !visibility
             baseBottomSheetView.isVisible = !visibility
 
         }
 
     }
+
+    private fun locationChecker() {
+
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(mLocationRequest!!)
+
+        val result: Task<LocationSettingsResponse> =
+            LocationServices.getSettingsClient(requireContext())
+                .checkLocationSettings(builder.build())
+
+        result.addOnCompleteListener { task ->
+
+            try {
+                task.getResult(ApiException::class.java)
+                getMyLocation()
+                onTrip()
+                collect()
+
+            } catch (exception: ApiException) {
+
+                when (exception.statusCode) {
+
+                    LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
+                        try {
+
+                            val resolve = exception as ResolvableApiException
+                            startIntentSenderForResult(
+                                resolve.resolution.intentSender,
+                                Priority.PRIORITY_HIGH_ACCURACY,
+                                null,
+                                0,
+                                0,
+                                0,
+                                null
+                            )
+
+                        } catch (e: Exception) {
+                        }
+
+                    }
+
+                    LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
+
+                    }
+
+                }
+            }
+
+        }
+
+    }
+
 
 
     private fun moveToCurrentLocation(latlng: LatLng) {
@@ -564,10 +756,30 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 1 && permissions.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            getMyLocation()
+            locationChecker()
         }
     }
 
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            Priority.PRIORITY_HIGH_ACCURACY -> {
+                when (resultCode) {
+                    Activity.RESULT_OK -> {
+                        getMyLocation()
+                        onTrip()
+                        collect()
+                    }
+
+                    Activity.RESULT_CANCELED -> {
+                        locationChecker()
+                    }
+                }
+            }
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -575,7 +787,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         mFusedLocationProviderClient = null
         mLocationCallback = null
 
-        removeObserveOnTrip("5")
+        tripId?.let { homeViewModel.removeObserveOnTrip(it) }
+        _binding = null
+        findingCaptainDialog = null
+        myNavHostFragment = null
     }
 
     private fun bitmapFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
@@ -602,14 +817,18 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private fun onBachPressedSetup() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (isEnabled) {
-                val childFragment = myNavHostFragment.childFragmentManager.fragments
+                val childFragment = myNavHostFragment?.childFragmentManager?.fragments
 
-                if (childFragment.size != 0 &&isBottomSheetVisible) {
-                    baseBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                   isBottomSheetVisible = false
+                val fragment = childFragment?.get(0)
+
+                if (isBottomSheetVisible
+                    && fragment?.javaClass != TripFragment::class.java
+                ) {
+                    bottomSheetVisibility(false)
                     clearMap()
 
-                } else if (chooseFromMap) {
+                }
+                else if (chooseFromMap) {
                     chooseFromMap = false
                     homeViewModel.chooseFromMap(false)
                     clearMap()

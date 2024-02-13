@@ -11,7 +11,19 @@ const val GET_CAPTAIN_DETAILS = "get-captain-details"
 const val DROP_OFF = "dropOff"
 const val PICK_UP = "pickUp"
 const val TRIPS = "trips"
-const val ACCEPT_TRIP = "accept_trip"
+
 const val START_TRIP = "start_trip"
+const val ACCEPTED = "accepted"
+const val ON_WAY = "on_the_way"
+const val ARRIVED = "arrived"
+const val PAY = "pay"
+const val NEW = "new"
+
+const val CANCEL_TRIP = "cancel-trip"
+const val CANCEL_BEFORE_CAPTAIN_ACCEPT = "cancel-before-captain-accept"
+
+const val PENDING = "pending"
+
+
 
 

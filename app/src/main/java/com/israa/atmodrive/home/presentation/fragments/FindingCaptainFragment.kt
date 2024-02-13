@@ -7,36 +7,63 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import androidx.fragment.app.DialogFragment
-import com.google.android.material.button.MaterialButton
-import com.israa.atmodrive.R
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import com.israa.atmodrive.databinding.FragmentFindingCaptainBinding
+import com.israa.atmodrive.home.viewmodels.HomeViewModel
+import com.israa.atmodrive.utils.UiState
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class FindingCaptainFragment :DialogFragment(){
+class FindingCaptainFragment : DialogFragment() {
 
+    private var _binding: FragmentFindingCaptainBinding? = null
+    private val binding get() = _binding!!
+
+    private val homeViewModel: HomeViewModel by activityViewModels()
+    private var tripId: Long? = null
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_finding_captain, container, false)
+        _binding = FragmentFindingCaptainBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        requireActivity().findViewById<MaterialButton>(R.id.btn_cancel).setOnClickListener {
-            requireActivity().onBackPressed()
+
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            homeViewModel.tripID.collect {
+                when (it) {
+                    is UiState.Failure -> {}
+                    UiState.Loading -> {}
+                    is UiState.Success -> {
+                        tripId = it.data as Long
+                    }
+
+                    null -> {
+                        tripId = null
+                    }
+                }
+            }
+        }
+
+        binding.btnCancel.setOnClickListener {
+            tripId?.let { homeViewModel.cancelBeforeCaptainAccept(it) }
         }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
-        dialog.window!!.setLayout(R.layout.fragment_finding_captain,ViewGroup.LayoutParams.MATCH_PARENT)
         dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setCancelable(false)
         return dialog
-
     }
+
+
 
 }

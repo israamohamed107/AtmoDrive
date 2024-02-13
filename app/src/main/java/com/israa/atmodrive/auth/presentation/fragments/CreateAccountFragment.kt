@@ -2,21 +2,21 @@ package com.israa.atmodrive.auth.presentation.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.israa.atmodrive.auth.presentation.viewmodels.CreateAccountViewModel
 import com.israa.atmodrive.databinding.FragmentCreateAccountBinding
 import com.israa.atmodrive.home.HomeActivity
-import com.israa.atmodrive.utils.UiState
 import com.israa.atmodrive.utils.Progressbar
+import com.israa.atmodrive.utils.UiState
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CreateAccountFragment : Fragment() {
@@ -41,6 +41,7 @@ class CreateAccountFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         mobile = args.mobile
         onClick()
+        enableSubmitButton()
     }
 
     private fun onObserve() {
@@ -73,7 +74,25 @@ class CreateAccountFragment : Fragment() {
     }
 
     private fun onClick() {
+
         binding.apply {
+
+            editTextName.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(arg0: Editable) {
+                    enableSubmitButton()
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+            })
+
             btnSubmit.setOnClickListener {
                 createAccountViewModel.registerPassenger(
                     editTextName.text.toString(),
@@ -92,6 +111,12 @@ class CreateAccountFragment : Fragment() {
         }
     }
 
+    private fun enableSubmitButton() {
+        binding.apply {
+            val spaces = editTextName.text.toString().filter { it == ' ' }.length
+            btnSubmit.isEnabled = spaces <= 3
+        }
+    }
 
 
     override fun onDestroyView() {

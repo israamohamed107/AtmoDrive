@@ -40,6 +40,10 @@
         <argument
             android:name="mobileNumber"
             app:argType="string" />
+        <argument
+            android:name="name"
+            app:argType="string"
+            app:nullable="true" />
 
 
     </fragment>

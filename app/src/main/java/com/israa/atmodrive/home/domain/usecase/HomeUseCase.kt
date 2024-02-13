@@ -1,14 +1,15 @@
 package com.israa.atmodrive.home.domain.usecase
 
 import com.israa.atmodrive.auth.data.datasource.remote.ResponseState
+import com.israa.atmodrive.home.data.models.CancelTripResponse
 import com.israa.atmodrive.home.data.models.CaptainDetailsResponse
 import com.israa.atmodrive.home.data.models.MakeTripResponse
-import com.israa.atmodrive.home.data.models.OnTripResponse
+import com.israa.atmodrive.home.data.models.TripData
 import com.israa.atmodrive.home.domain.repo.IHomeRepository
 import javax.inject.Inject
 
 class HomeUseCase @Inject constructor(private val iHomeRepository: IHomeRepository) : IHomeUseCase {
-    override suspend fun onTrip(): ResponseState<OnTripResponse> = iHomeRepository.onTrip()
+    override suspend fun onTrip(): ResponseState<TripData> = iHomeRepository.onTrip()
 
     override suspend fun makeTrip(
         distanceText: String,
@@ -32,7 +33,7 @@ class HomeUseCase @Inject constructor(private val iHomeRepository: IHomeReposito
         dropOffLocationName: String
     ) =
         iHomeRepository.confirmTrip(
-            vehicleClassId = vehicleClassId,
+            vehicleClassId,
             pickupLat,
             pickupLng,
             dropOffLat,
@@ -44,7 +45,11 @@ class HomeUseCase @Inject constructor(private val iHomeRepository: IHomeReposito
             dropOffLocationName
         )
 
-    override suspend fun getCaptainDetails(tripId: Int): ResponseState<CaptainDetailsResponse> =
+    override suspend fun getCaptainDetails(tripId: Long): ResponseState<CaptainDetailsResponse> =
         iHomeRepository.getCaptainDetails(tripId)
+
+    override suspend fun cancelTrip(tripId: Long): ResponseState<CancelTripResponse> = iHomeRepository.cancelTrip(tripId)
+    override suspend fun cancelBeforeCaptainAccept(tripId: Long): ResponseState<CancelTripResponse> =
+        iHomeRepository.cancelBeforeCaptainAccept(tripId)
 
 }

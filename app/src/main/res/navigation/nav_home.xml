@@ -8,6 +8,15 @@
         android:id="@+id/homeFragment"
         android:name="com.israa.atmodrive.home.presentation.fragments.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_findingCaptainFragment"
+            app:destination="@id/findingCaptainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/findingCaptainFragment"
+        android:name="com.israa.atmodrive.home.presentation.fragments.FindingCaptainFragment"
+        android:label="fragment_finding_captain"
+        tools:layout="@layout/fragment_finding_captain" />
 
 </navigation>

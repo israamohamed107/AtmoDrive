@@ -1,13 +1,14 @@
 package com.israa.atmodrive.home.domain.usecase
 
 import com.israa.atmodrive.auth.data.datasource.remote.ResponseState
+import com.israa.atmodrive.home.data.models.CancelTripResponse
 import com.israa.atmodrive.home.data.models.CaptainDetailsResponse
 import com.israa.atmodrive.home.data.models.ConfirmTripResponse
 import com.israa.atmodrive.home.data.models.MakeTripResponse
-import com.israa.atmodrive.home.data.models.OnTripResponse
+import com.israa.atmodrive.home.data.models.TripData
 
 interface IHomeUseCase {
-    suspend fun onTrip():ResponseState<OnTripResponse>
+    suspend fun onTrip():ResponseState<TripData>
 
     suspend fun makeTrip(
         distanceText: String,
@@ -30,6 +31,14 @@ interface IHomeUseCase {
     ):ResponseState<ConfirmTripResponse>
 
     suspend fun getCaptainDetails(
-        tripId: Int
+        tripId: Long
     ): ResponseState<CaptainDetailsResponse>
+
+    suspend fun cancelTrip(
+        tripId: Long
+    ): ResponseState<CancelTripResponse>
+
+    suspend fun cancelBeforeCaptainAccept(
+        tripId: Long
+    ): ResponseState<CancelTripResponse>
 }

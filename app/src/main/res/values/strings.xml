@@ -39,7 +39,8 @@
     <string name="default_trip">Default trip</string>
     <string name="edit">Edit</string>
     <string name="remove">Remove</string>
-    <string name="enter_the_otp_code_sent_to_you_at_mobile_number">Enter the OTP code sent to you at mobile number </string>
+    <string name="new_user_message">Enter the OTP code sent to you at mobile number +2%s to verify its you.</string>
+    <string name="user_message">Hello %1s . Enter the OTP code sent to you at mobile number +2%2s</string>
     <string name="required">required</string>
     <string name="to_verify_its_you">  to verify its you</string>
     <string name="logout">Logout</string>
@@ -54,9 +55,13 @@
     <string name="where_to_go">Where to go?</string>
     <string name="loading">Loading...</string>
     <string name="cancel">Cancel</string>
-    <string name="minutes_way_from_you"> minutes way from you</string>
-    <string name="egp">EGP</string>
+    <string name="minutes_way_from_you">  minutes way from you</string>
+    <string name="egp">  EGP</string>
     <string name="done">Done</string>
     <string name="trip_running">Trip Running</string>
     <string name="captain_is_on_the_way_to_you">Captain is on the way to you.</string>
+    <string name="captain_is_arrived_to_pickup">Captain is arrived to pickup</string>
+    <string name="you_are_arrived_to_drop_off">You are arrived to drop off! 🎉🎉</string>
+    <string name="captain_accept_yor_trip">Captain accepted yor trip</string>
+    <string name="confirm">Confirm</string>
 </resources>

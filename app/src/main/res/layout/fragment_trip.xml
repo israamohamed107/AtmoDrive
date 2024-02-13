@@ -7,6 +7,7 @@
     android:background="@color/backgroundColor"
     android:elevation="@dimen/_5sdp"
     app:cardCornerRadius="@dimen/_10sdp"
+    android:layout_margin="@dimen/_10sdp"
     tools:context=".home.presentation.fragments.trip.TripFragment"
     app:behavior_hideable="true"
     app:behavior_peekHeight="0dp"
@@ -25,7 +26,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/orange"
-            android:text="@string/captain_is_on_the_way_to_you"
             android:textStyle="bold"
             android:fontFamily="@font/dm_sans"
             android:textColor="@color/white"
@@ -39,7 +39,7 @@
             android:id="@+id/img_captain"
             android:layout_width="@dimen/_50sdp"
             android:layout_height="@dimen/_50sdp"
-            android:src="@drawable/profile"
+            android:src="@drawable/passenger_img"
             app:layout_constraintTop_toBottomOf="@id/txt_trip_Status"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_margin="@dimen/_15sdp"
@@ -47,40 +47,37 @@
             />
 
         <TextView
-            android:id="@+id/txt_passenger_name"
+            android:id="@+id/txt_captain_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/txt_trip_Status"
             app:layout_constraintStart_toEndOf="@id/img_captain"
-            android:text="Israa Mohamed"
             android:textStyle="bold"
             android:textColor="@color/textColor"
-            android:textSize="@dimen/_15sdp"
+            android:textSize="@dimen/_13sdp"
             android:fontFamily="@font/dm_sans"
             android:layout_margin="@dimen/_15sdp"
             android:layout_marginTop="@dimen/_5sdp"
 
             />
+
         <TextView
             android:id="@+id/txt_car_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="646 BC"
-            android:textColor="@color/secondary_color"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/txt_passenger_name"
+            android:layout_width="0dp"
+            android:layout_height="19dp"
             android:layout_marginHorizontal="@dimen/_15sdp"
-            android:textSize="@dimen/_15sdp"
-            android:textStyle="bold"
-            android:fontFamily="@font/dm_sans"
             android:layout_marginTop="@dimen/_5sdp"
-            />
+            android:fontFamily="@font/dm_sans"
+            android:textColor="@color/secondary_color"
+            android:textSize="@dimen/_13sdp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/txt_captain_name" />
 
         <TextView
             android:id="@+id/txt_car_brand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="White Sunny"
             android:textSize="@dimen/_12sdp"
             android:textColor="@color/secondary_color"
             app:layout_constraintTop_toBottomOf="@id/txt_car_number"
@@ -94,13 +91,13 @@
             android:id="@+id/txt_car_model"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2018"
             android:textSize="@dimen/_12sdp"
-            android:textColor="@color/secondary_color"
+            android:textColor="@color/textColor"
             app:layout_constraintTop_toBottomOf="@id/txt_car_brand"
             app:layout_constraintBottom_toBottomOf="@id/img_captain"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginHorizontal="@dimen/_15sdp"
+            android:text="111111111111111"
 
             />
         <RatingBar
@@ -114,8 +111,8 @@
             android:rating="4"
             android:stepSize="1"
             android:layout_marginTop="@dimen/_5sdp"
-            app:layout_constraintStart_toStartOf="@id/txt_passenger_name"
-            app:layout_constraintTop_toBottomOf="@id/txt_passenger_name" />
+            app:layout_constraintStart_toStartOf="@id/txt_captain_name"
+            app:layout_constraintTop_toBottomOf="@id/txt_captain_name" />
 
         <TextView
             android:id="@+id/txt_rating"
@@ -134,8 +131,8 @@
             android:layout_height="wrap_content"
             android:text="Contact captain"
             android:fontFamily="@font/dm_sans"
-            android:textColor="@color/secondary_color"
-            android:textSize="@dimen/_13sdp"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/_12sdp"
             app:layout_constraintTop_toBottomOf="@id/img_captain"
             android:layout_marginVertical="@dimen/_30sdp"
             app:layout_constraintStart_toStartOf="@id/img_captain"
@@ -147,6 +144,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cash"
+            android:textColor="@color/textColor"
             app:layout_constraintEnd_toEndOf="@id/txt_car_model"
             app:layout_constraintTop_toTopOf="@id/txt_contact_captain"
             app:layout_constraintBottom_toBottomOf="@id/txt_contact_captain"
@@ -157,14 +155,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/green"
-            android:text="105 EG"
             app:layout_constraintBottom_toTopOf="@id/txt_cash"
             app:layout_constraintTop_toBottomOf="@id/txt_car_model"
             app:layout_constraintEnd_toEndOf="@id/txt_cash"
             android:textSize="@dimen/_13sdp"
             android:textStyle="bold"
+            android:text="111111111111"
             android:fontFamily="@font/dm_sans"
-            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_20sdp"
             />
 
         <ImageView
@@ -173,7 +171,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/dial"
             app:layout_constraintStart_toStartOf="@id/txt_contact_captain"
-            app:layout_constraintBottom_toBottomOf="@id/btn_reject"
+            app:layout_constraintBottom_toBottomOf="@id/btn_cancel"
             android:layout_marginVertical="@dimen/_10sdp"
             />
 
@@ -187,7 +185,7 @@
             android:layout_marginHorizontal="@dimen/_10sdp"
             />
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_reject"
+            android:id="@+id/btn_cancel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintWidth_percent=".4"

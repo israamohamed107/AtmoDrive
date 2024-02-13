@@ -13,39 +13,10 @@
         android:id="@+id/tilte"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:text="@string/enter_the_otp_code_sent_to_you_at_mobile_number"
         android:textColor="@color/textColor"
-        android:textSize="@dimen/_15sdp"
+        android:textSize="@dimen/_13sdp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/linear"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tilte">
-
-        <TextView
-            android:id="@+id/txt_mobile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/main_color"
-            android:text="@string/eg_country_code"
-            android:textSize="@dimen/_15sdp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/to_verify_its_you"
-            android:textColor="@color/textColor"
-            android:layout_marginStart="@dimen/_2sdp"
-            android:textSize="@dimen/_15sdp" />
-
-
-    </LinearLayout>
 
     <com.chaos.view.PinView
         android:id="@+id/pinview"
@@ -54,6 +25,7 @@
         android:layout_height="wrap_content"
         android:cursorVisible="true"
         android:gravity="center"
+        android:digits="1234567890"
         android:inputType="number"
         android:textSize="@dimen/_15sdp"
         android:itemBackground="@color/backgroundColor"
@@ -61,7 +33,7 @@
         app:hideLineWhenFilled="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linear"
+        app:layout_constraintTop_toBottomOf="@id/tilte"
         android:textColor="@color/textColor"
         app:lineColor="@color/hint_color"
         android:layout_marginVertical="@dimen/_20sdp"

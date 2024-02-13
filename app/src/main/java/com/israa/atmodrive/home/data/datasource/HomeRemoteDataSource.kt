@@ -1,20 +1,21 @@
 package com.israa.atmodrive.home.data.datasource
 
 import com.israa.atmodrive.auth.data.datasource.remote.ResponseState
+import com.israa.atmodrive.home.data.models.CancelTripResponse
 import com.israa.atmodrive.home.data.models.CaptainDetailsResponse
 import com.israa.atmodrive.home.data.models.ConfirmTripResponse
 import com.israa.atmodrive.home.data.models.MakeTripResponse
-import com.israa.atmodrive.home.data.models.OnTripResponse
+import com.israa.atmodrive.home.data.models.TripData
 import com.israa.atmodrive.utils.explain
 import javax.inject.Inject
 
 class HomeRemoteDataSource @Inject constructor(private val ihomeApiServices: HomeApiServices) :
     IHomeRemoteDataSource {
-    override suspend fun onTrip(): ResponseState<OnTripResponse> {
+    override suspend fun onTrip(): ResponseState<TripData> {
         return try {
             val result = ihomeApiServices.onTrip()
             if (result.status) {
-                ResponseState.Success(result)
+                ResponseState.Success(result.data!!)
             } else {
                 ResponseState.Failure(result.message)
             }
@@ -83,18 +84,46 @@ class HomeRemoteDataSource @Inject constructor(private val ihomeApiServices: Hom
         }
     }
 
-    override suspend fun getCaptainDetails(tripId: Int): ResponseState<CaptainDetailsResponse> {
+    override suspend fun getCaptainDetails(tripId: Long): ResponseState<CaptainDetailsResponse> {
         return try {
 
-        val result = ihomeApiServices.getCaptainDetails(tripId)
-        if (result.status) {
-            ResponseState.Success(result)
-        } else {
-            ResponseState.Failure(result.message)
+            val result = ihomeApiServices.getCaptainDetails(tripId)
+            if (result.status) {
+                ResponseState.Success(result)
+            } else {
+                ResponseState.Failure(result.message)
+            }
+        } catch (e: Exception) {
+            e.explain()
         }
-    } catch (e: Exception) {
-        e.explain()
     }
+
+    override suspend fun cancelTrip(tripId: Long): ResponseState<CancelTripResponse> {
+        return try {
+
+            val result = ihomeApiServices.cancelTrip(tripId)
+            if (result.status) {
+                ResponseState.Success(result)
+            } else {
+                ResponseState.Failure(result.massage)
+            }
+        } catch (e: Exception) {
+            e.explain()
+        }
+    }
+
+    override suspend fun cancelBeforeCaptainAccept(tripId: Long): ResponseState<CancelTripResponse> {
+        return try {
+
+            val result = ihomeApiServices.cancelBeforeCaptainAccept(tripId)
+            if (result.status) {
+                ResponseState.Success(result)
+            } else {
+                ResponseState.Failure(result.massage)
+            }
+        } catch (e: Exception) {
+            e.explain()
+        }
     }
 
 

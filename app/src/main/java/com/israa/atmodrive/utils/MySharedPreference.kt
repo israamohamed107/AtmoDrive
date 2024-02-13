@@ -17,6 +17,10 @@ object MySharedPreferences {
         )
     }
 
+    fun clear(){
+        getSharedPreferences().edit().clear().apply()
+    }
+
 
     fun setUser(user: CheckCode) {
 
